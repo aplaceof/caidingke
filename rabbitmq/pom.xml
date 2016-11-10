@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>net.caidingke</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>rabbitmq</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>3.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.amqp</groupId>
+            <artifactId>spring-rabbit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>${dependency.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.7.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+
+    </dependencies>
+
+    <!--build介绍-->
+    <!--defaultGoal: 定义默认的目标或者阶段。如install-->
+    <!--directory: 编译输出的目录-->
+    <!--finalName: 生成最后的文件的样式-->
+    <!--filter: 定义过滤，用于替换相应的属性文件，使用maven定义的属性。设置所有placehold的值-->
+
+
+    <!--resources: resource的列表，用于包括所有的资源-->
+    <!--targetPath: 指定目标路径，用于放置资源，用于build-->
+    <!--filtering: 是否替换资源中的属性placehold-->
+    <!--directory: 资源所在的位置-->
+    <!--includes: 样式，包括那些资源-->
+    <!--excludes: 排除的资源-->
+    <!--testResources: 测试资源列表-->
+
+
+    <!--extensions: true or false，是否装载插件扩展。默认false-->
+    <!--inherited: true or false，是否此插件配置将会应用于poms，那些继承于此的项目-->
+    <!--configuration: 指定插件配置-->
+    <!--dependencies: 插件需要依赖的包-->
+    <!--executions: 用于配置execution目标，一个插件可以有多个目标。-->
+
+
+    <!--id:规定execution 的唯一标志-->
+    <!--goals: 表示目标-->
+    <!--phase: 表示阶段，目标将会在什么阶段执行-->
+    <!--inherited: 和上面的元素一样，设置false maven将会拒绝执行继承给子插件-->
+    <!--configuration: 表示此执行的配置属性-->
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
+        <filters>
+            <filter>src/main/filters/filter-${env}.properties</filter>
+        </filters>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.handlers</resource>
+                                </transformer>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.schemas</resource>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <profiles>
+        <!--开发环境 默认激活-->
+        <profile>
+            <id>dev</id>
+            <properties>
+                <env>dev</env>
+            </properties>
+            <activation>
+                <!--默认启用的dev环境-->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <!-- 生产环境 -->
+        <profile>
+            <id>production</id>
+            <properties>
+                <env>production</env>
+            </properties>
+        </profile>
+
+        <!-- 测试环境 -->
+        <profile>
+            <id>test</id>
+            <properties>
+                <env>test</env>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>
