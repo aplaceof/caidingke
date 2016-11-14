@@ -1,6 +1,0 @@
-net/caidingke/rabbitmq/spring/FanoutListener.class
-net/caidingke/rabbitmq/spring/JsonObject.class
-net/caidingke/rabbitmq/spring/TopicListener.class
-net/caidingke/rabbitmq/spring/MessageProducerService.class
-net/caidingke/rabbitmq/spring/MessageConsumerService.class
-net/caidingke/rabbitmq/spring/FastJsonMessageConverter.class
