@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="net.caidingke.redis"/>
+
+    <bean id="redisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="${redis-address}"/>
+        <property name="port" value="${redis-port}"/>
+    </bean>
+
+    <bean name="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="redisConnectionFactory"></property>
+    </bean>
+
+    <bean name="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+        <property name="connectionFactory" ref="redisConnectionFactory"></property>
+    </bean>
+
+    <!--<bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />-->
+    <!--<bean  id ="JdkSerializationRedisSerializer" class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>-->
+
+    <!--<bean  id="GenericToStringSerializer" class="org.springframework.data.redis.serializer.GenericToStringSerializer">-->
+        <!--<constructor-arg name="type" value="java.lang.Long"/>-->
+    <!--</bean>-->
+</beans>
