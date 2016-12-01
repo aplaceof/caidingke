@@ -2,8 +2,6 @@ package net.caidingke.rabbitmq.spring;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.support.converter.AbstractJsonMessageConverter;
@@ -17,11 +15,8 @@ import java.io.UnsupportedEncodingException;
  * @author bowen
  * @create 2016-11-02 16:21
  */
-
 public class FastJsonMessageConverter extends AbstractJsonMessageConverter {
     private static JSON jsonObject = new JSONObject();
-    private static Log log = LogFactory.getLog(FastJsonMessageConverter.class);
-
     public static final String DEFAULT_CHARSET = "UTF-8";
 
     private volatile String defaultCharset = DEFAULT_CHARSET;

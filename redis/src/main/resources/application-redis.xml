@@ -7,22 +7,28 @@
     <context:component-scan base-package="net.caidingke.redis"/>
 
     <bean id="redisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
-        <property name="hostName" value="${redis-address}"/>
-        <property name="port" value="${redis-port}"/>
+        <property name="hostName" value="${spring.redis.host}"/>
+        <property name="port" value="${spring.redis.port}"/>
     </bean>
 
     <bean name="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
-        <property name="connectionFactory" ref="redisConnectionFactory"></property>
+        <property name="connectionFactory" ref="redisConnectionFactory"/>
+        <property name="keySerializer" ref="stringRedisSerializer"/>
+        <property name="valueSerializer" ref="redisObjectSerializer"/>
     </bean>
 
     <bean name="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
         <property name="connectionFactory" ref="redisConnectionFactory"></property>
     </bean>
 
-    <!--<bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />-->
+    <bean id="redisObjectSerializer" class=" org.springframework.data.redis.serializer.JacksonJsonRedisSerializer">
+        <constructor-arg name="type" value="java.lang.Object"/>
+    </bean>
+
+    <bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />
     <!--<bean  id ="JdkSerializationRedisSerializer" class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>-->
 
-    <!--<bean  id="GenericToStringSerializer" class="org.springframework.data.redis.serializer.GenericToStringSerializer">-->
-        <!--<constructor-arg name="type" value="java.lang.Long"/>-->
-    <!--</bean>-->
+    <bean  id="GenericToStringSerializer" class="org.springframework.data.redis.serializer.GenericToStringSerializer">
+        <constructor-arg name="type" value="java.lang.Object"/>
+    </bean>
 </beans>

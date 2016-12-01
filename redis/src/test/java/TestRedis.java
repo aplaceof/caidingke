@@ -1,4 +1,6 @@
 import junit.framework.TestCase;
+import net.caidingke.redis.domain.Admin;
+import net.caidingke.redis.domain.User;
 import net.caidingke.redis.service.RedisService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +22,26 @@ public class TestRedis extends TestCase implements Serializable {
     private RedisService service;
 
     @Test
-    public void testRedis() {
-        System.out.println(service.increment("ccccc"));
+    public void testRedisIncrement() {
+        System.out.println("fanfan"+service.increment("ccccc"));
     }
+
+    @Test
+    public void testRedisSet() {
+        Admin admin = new Admin("fanfan", 123, 10);
+        User user = new User("bowen", 20,admin);
+        service.save(user);
+
+    }
+
+    @Test
+    public void testRedisGet() {
+
+        if (service.getUserByName("bowen") instanceof User) {
+            System.out.println("happy");
+        }
+    }
+
+
 
 }
