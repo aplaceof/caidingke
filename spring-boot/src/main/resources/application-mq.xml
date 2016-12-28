@@ -19,11 +19,11 @@ http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.spri
     <!--exclusive: 仅创建者可以使用的私有队列，断开后自动删除-->
     <!--auto_delete: 当所有消费客户端连接断开后，是否自动删除队列-->
 
-    <rabbit:queue id="rabbit-queue-one" durable="true"
-                  auto-delete="false" exclusive="false" name="rabbit_queue_one"/>
+    <!--<rabbit:queue id="rabbit-queue-one" durable="true"-->
+                  <!--auto-delete="false" exclusive="false" name="rabbit_queue_one"/>-->
 
-    <rabbit:queue id="rabbit_queue_two" durable="true"
-                  auto-delete="false" exclusive="false" name="rabbit_queue_two"/>
+    <!--<rabbit:queue id="rabbit_queue_two" durable="true"-->
+                  <!--auto-delete="false" exclusive="false" name="rabbit_queue_two"/>-->
 
     <!-- 声明的订阅模型的queue(fanout) -->
     <rabbit:queue id="fanout-subscribe" durable="true" auto-delete="false" exclusive="false" name="fanout-subscribe"/>
@@ -33,14 +33,14 @@ http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.spri
     <rabbit:fanout-exchange name="fanout-exchange" durable="true" auto-delete="false" id="fanout-exchange">
         <rabbit:bindings>
             <rabbit:binding queue="fanout-subscribe"></rabbit:binding>
-            <!--<rabbit:binding queue="fanout-subscribe2"></rabbit:binding>-->
+            <rabbit:binding queue="fanout-subscribe2"></rabbit:binding>
         </rabbit:bindings>
     </rabbit:fanout-exchange>
 
 
     <!-- 声明的订阅模型的queue(topic) -->
-    <rabbit:queue id="queue_topic" durable="true" auto-delete="false" exclusive="false" name="queue_topic"/>
-    <rabbit:queue id="queue_topic2" durable="true" auto-delete="false" exclusive="false" name="queue_topic2"/>
+    <!--<rabbit:queue id="queue_topic" durable="true" auto-delete="false" exclusive="false" name="queue_topic"/>-->
+    <!--<rabbit:queue id="queue_topic2" durable="true" auto-delete="false" exclusive="false" name="queue_topic2"/>-->
 
 
 
@@ -66,29 +66,27 @@ http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.spri
     <!-- queue litener  观察 监听模式 当有消息到达时会通知监听在对应的队列上的监听对象
     taskExecutor这个需要自己实现一个连接池 按照官方说法 除非特别大的数据量 一般不需要连接池 -->
     <!--queues：监听的队列，多个的话用逗号（,）分隔 ref：监听器-->
-    <rabbit:listener-container message-converter="jsonMessageConverter" connection-factory="connectionFactory"
-                               acknowledge="auto">
-        <rabbit:listener queues="rabbit-queue-one,rabbit_queue_two" ref="messageConsumerService"/>
-    </rabbit:listener-container>
-
-    <!-- fanout监听器绑定 -->
-    <rabbit:listener-container message-converter="jsonMessageConverter" connection-factory="connectionFactory" acknowledge="auto">
-        <rabbit:listener queues="fanout-subscribe" ref="fanoutListener"/>
-    </rabbit:listener-container>
-
-    <!--<rabbit:listener-container message-converter="jsonMessageConverter" connection-factory="connectionFactory" acknowledge="auto">-->
-        <!--<rabbit:listener queues="fanout-subscribe2" ref="fanoutListener"/>-->
+    <!--<rabbit:listener-container message-converter="jsonMessageConverter" connection-factory="connectionFactory"-->
+                               <!--acknowledge="auto">-->
+        <!--<rabbit:listener queues="rabbit-queue-one,rabbit_queue_two" ref="messageConsumerService"/>-->
     <!--</rabbit:listener-container>-->
 
+    <!-- fanout监听器绑定 -->
+    <!--<rabbit:listener-container message-converter="jsonMessageConverter" connection-factory="connectionFactory" acknowledge="auto">-->
+        <!--<rabbit:listener queues="fanout-subscribe,fanout-subscribe2" ref="fanoutListener"/>-->
+    <!--</rabbit:listener-container>-->
+
+    <rabbit:listener-container message-converter="jsonMessageConverter" connection-factory="connectionFactory" acknowledge="auto">
+        <rabbit:listener queues="fanout-subscribe2" ref="fanoutListener"/>
+    </rabbit:listener-container>
 
     <!-- topic监听器绑定-->
-    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto">
-        <rabbit:listener queues="queue_topic" ref="topicListener"/>
-    </rabbit:listener-container>
+    <!--<rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto">-->
+        <!--<rabbit:listener queues="queue_topic" ref="topicListener"/>-->
+    <!--</rabbit:listener-container>-->
 
-    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto">
-        <rabbit:listener queues="queue_topic2" ref="topicListener"/>
-    </rabbit:listener-container>
-
+    <!--<rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto">-->
+        <!--<rabbit:listener queues="queue_topic2" ref="topicListener"/>-->
+    <!--</rabbit:listener-container>-->
 
 </beans>

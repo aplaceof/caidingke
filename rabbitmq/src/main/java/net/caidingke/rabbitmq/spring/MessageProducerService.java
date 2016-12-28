@@ -25,7 +25,6 @@ public class MessageProducerService {
     @Autowired
     private AmqpTemplate directTemplate;
 
-
     /**
      * convertAndSend：将Java对象转换为消息发送到匹配Key的交换机中Exchange。
      * 原文：Convert a Java object to an Amqp Message and send it to a default exchange with a specific routing key.

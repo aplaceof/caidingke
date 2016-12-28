@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true" >
+    <property name="appName" value="caidingke-message"/>
+    <!-- 定义日志文件 输入位置 -->
+    <property name="log_dir" value="logs/${appName}"/>
+    <!-- 日志最大的历史 30天 -->
+    <property name="maxHistory" value="30"/>
+    <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>
+    <contextName>${appName}</contextName>
+
+    <!-- ConsoleAppender 控制台输出日志 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are  by default assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder
+             对日志进行格式化 -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--2.FileAppender:
+    把日志添加到文件，有以下子节点：
+    <file>：被写入的文件名，可以是相对目录，也可以是绝对目录，如果上级目录不存在会自动创建，没有默认值。
+    <append>：如果是 true，日志被追加到文件结尾，如果是 false，清空现存文件，默认是true。
+    <encoder>：对记录事件进行格式化。（具体参数稍后讲解 ）
+    <prudent>：如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false。-->
+
+    <!--<appender name="file" class="ch.qos.logback.core.FileAppender">
+        <file>${logFile}</file>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+    </appender>-->
+
+    <!--3.RollingFileAppender:
+    滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件。有以下子节点：
+    <file>：被写入的文件名，可以是相对目录，也可以是绝对目录，如果上级目录不存在会自动创建，没有默认值。
+    <append>：如果是 true，日志被追加到文件结尾，如果是 false，清空现存文件，默认是true。
+    <encoder>：对记录事件进行格式化。（具体参数稍后讲解 ）
+    <rollingPolicy>:当发生滚动时，决定 RollingFileAppender 的行为，涉及文件移动和重命名。
+    <triggeringPolicy >: 告知 RollingFileAppender 合适激活滚动。
+    <prudent>：当为true时，不支持FixedWindowRollingPolicy。支持TimeBasedRollingPolicy，但是有两个限制，
+    1不支持也不允许文件压缩，2不能设置file属性，必须留空。-->
+    <appender name="logFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!--ThresholdFilter： 临界值过滤器，过滤掉低于指定临界值的日志。当日志级别等于或高于临界值时，过滤器返回NEUTRAL；
+        当日志级别低于临界值时，日志会被拒绝。
+        例如：过滤掉所有低于INFO级别的日志也就是过滤掉 TRACE 和 DEBUG 级别的日志-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+
+        <!--TimeBasedRollingPolicy： 最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责出发滚动。有以下子节点：
+        <fileNamePattern>:
+        必要节点，包含文件名及“%d”转换符， “%d”可以包含一个 java.text.SimpleDateFormat指定的时间格式，如：%d{yyyy-MM}。如果直接使用 %d，
+        默认格式是 yyyy-MM-dd。 RollingFileAppender 的file字节点可有可无，通过设置file，可以为活动文件和归档文件指定不同位置，
+        当前日志总是记录到file指定的文件（活动文件），活动文件的名字不会改变；如果没设置file，活动文件的名字会根据fileNamePattern 的值，
+        每隔一段时间改变一次。“/”或者“\”会被当做目录分隔符。
+        <maxHistory>:
+        可选节点，控制保留的归档文件的最大数量，超出数量就删除旧文件。假设设置每个月滚动，且 <maxHistory>是6，
+        则只保存最近6个月的文件，删除之前的旧文件。注意，删除旧文件是，那些为了归档而创建的目录也会被删除。-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_dir}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="directLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_dir}.%d{yyyy-MM-dd}-direct.log</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <!--additivity 为true向上传递否则不向上传递,默认为true-->
+    <logger name="directLogger" level="DEBUG" additivity="true">
+        <appender-ref ref="directLog"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="console" />
+        <!--<appender-ref ref="file"/>-->
+        <appender-ref ref="logFile"/>
+    </root>
+</configuration>

@@ -5,10 +5,6 @@ package net.caidingke.common.math;
  */
 public class MathAbs {
 
-
-    public MathAbs() {
-    }
-
     public static void main(String[] args) {
 
         System.out.println(Math.abs(-2147483648));

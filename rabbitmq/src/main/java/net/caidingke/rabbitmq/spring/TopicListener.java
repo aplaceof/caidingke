@@ -2,7 +2,9 @@ package net.caidingke.rabbitmq.spring;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.stereotype.Service;
@@ -14,10 +16,11 @@ import java.io.IOException;
  * @create 2016-11-03 11:14
  */
 @Service
-@Log
+@Slf4j
 public class TopicListener implements MessageListener{
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     public void onMessage(Message message) {
         log.info(String.format("接收到消息：%s", message.toString()));

@@ -1,3 +1,6 @@
+import com.google.common.collect.Lists;
+import lombok.NonNull;
+import lombok.val;
 import net.caidingke.rabbitmq.spring.JsonObject;
 import net.caidingke.rabbitmq.spring.MessageProducerService;
 import org.junit.Test;
@@ -5,6 +8,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author bowen
@@ -19,6 +26,8 @@ public class TestQueue {
 
     @Test
     public void send() {
+        val example = new ArrayList<>();
+
         //for (int i = 100 ; i >0 ; i--) {
         JsonObject object = new JsonObject();
         object.setName("bowen");
@@ -36,9 +45,9 @@ public class TestQueue {
         //producerService.pushToMessage(name);
         producerService.sendFanoutMsg(object);
 
-        producerService.sendTopicMsg("zhu.p1",object);
-        producerService.sendTopicMsg("fddffs",object);
-        producerService.sendDataToCrQueue(object);
+        //producerService.sendTopicMsg("zhu.p1",object);
+        //producerService.sendTopicMsg("fddffs",object);
+        //producerService.sendDataToCrQueue(object);
     }
 
 }
