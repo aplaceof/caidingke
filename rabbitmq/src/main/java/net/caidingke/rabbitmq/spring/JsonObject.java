@@ -1,14 +1,9 @@
 package net.caidingke.rabbitmq.spring;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.Accessors;
-import lombok.val;
-
-import java.util.ArrayList;
 
 /**
  * 测试rabbitmq jsonMessageConverter

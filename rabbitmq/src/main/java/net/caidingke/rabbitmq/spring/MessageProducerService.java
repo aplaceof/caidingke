@@ -1,8 +1,6 @@
 package net.caidingke.rabbitmq.spring;
 
-import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,8 +54,8 @@ public class MessageProducerService {
     /**
      * 主题
      */
-    public void sendTopicMsg(String topic,Object obj) {
-        rabbitTemplate.convertAndSend("topic-exchange",topic,obj);
+    public void sendTopicMsg(String topic, Object obj) {
+        rabbitTemplate.convertAndSend("topic-exchange", topic, obj);
     }
 
 }

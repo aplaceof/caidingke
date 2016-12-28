@@ -33,10 +33,10 @@ public class FastJsonMessageConverter extends AbstractJsonMessageConverter {
 
 
 
-    public <T> T fromMessage(Message message,T t) {
+    public <T> T fromMessage(Message message, T t) {
         String json = "";
         try {
-            json = new String(message.getBody(),defaultCharset);
+            json = new String(message.getBody(), defaultCharset);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
