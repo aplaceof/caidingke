@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
  * @author bowen
  * @create 2016-12-23 15:46
  */
-
 public class NumberConvertUtils {
 
     private static final Pattern REGEX = Pattern.compile("^(0|[1-9]\\d{0,9})(\\.?)(\\d{0,2}?)$");
@@ -30,13 +29,22 @@ public class NumberConvertUtils {
 
     private static final int FRACTION = 3;
 
+    private NumberConvertUtils() {
+
+    }
+
     public static String transform(final BigDecimal amount) {
         Preconditions.checkNotNull(amount, "must be not null");
         return transform(amount.toString());
     }
 
-    public static String transform(final String amount) {
+    public static String transform(String amount) {
         Preconditions.checkNotNull(amount, "must be not null");
+        boolean isNegative = false;
+        if (amount.indexOf("-") != -1) {
+            isNegative = true;
+            amount = amount.substring(amount.indexOf("-") + 1 , amount.length());
+        }
         if (amount.equals("0") || amount.equals("0.0") || amount.equals("0.00")) {
             return "零元整";
         }
@@ -59,7 +67,7 @@ public class NumberConvertUtils {
         }else{
             result += fraction2rmb(fraction); // 小数部分
         }
-        return result;
+        return isNegative ? "负"+result : result;
     }
     private static boolean isNullOrEmptyOrZero(String fraction) {
         return Strings.isNullOrEmpty(fraction) || "00".equals(fraction) || "0".equals(fraction);
@@ -101,4 +109,9 @@ public class NumberConvertUtils {
         return buffer.reverse().toString();
     }
 
+    //public static void main(String[] args) {
+    //
+    //    System.out.println(transform("-123"));
+    //
+    //}
 }

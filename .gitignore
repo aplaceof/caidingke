@@ -9,4 +9,7 @@ classes
 rebel.xml
 target
 logs
+idea_checks.xml
+swagger-ui
+swagger
 *~
