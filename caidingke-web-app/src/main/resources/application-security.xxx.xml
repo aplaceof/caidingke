@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!-- entry-point-ref 指定登录入口 -->
+    <security:http entry-point-ref="authEntryPoint">
+        <security:logout delete-cookies="JSESSIONID" />
+        <security:intercept-url pattern="/api/login"
+                                access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <security:intercept-url pattern="/**" access="ROLE_USER" />
+        <!-- 添加自己定义的 AuthenticationFilter 到 FilterChain 的 FORM_LOGIN_FILTER 位置 -->
+        <security:custom-filter ref="authenticationFilter" position="FORM_LOGIN_FILTER"/>
+    </security:http>
+    <!-- AuthenticationEntryPoint，引导用户进行登录 -->
+    <bean id="authEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <constructor-arg value="/api/login"/>
+    </bean>
+    <!-- 认证过滤器 -->
+    <bean id="authenticationFilter"
+          class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+        <property name="authenticationManager" ref="authenticationManager" />
+        <property name="usernameParameter" value="username"/>
+        <property name="passwordParameter" value="password"/>
+        <property name="filterProcessesUrl" value="/api/login" />
+    </bean>
+
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider
+                user-service-ref="userDetailsService">
+            <security:password-encoder hash="md5"
+                                       base64="true">
+                <security:salt-source user-property="username" />
+            </security:password-encoder>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <bean id="userDetailsService"
+          class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+</beans>

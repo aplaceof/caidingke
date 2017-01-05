@@ -1,0 +1,128 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+          http://www.springframework.org/schema/security
+          http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!-- http 元素的 pattern 属性指定当前的 http 对应的 FilterChain 将匹配哪些 URL，如未指定将匹配所有的请求 -->
+    <!-- entry-point-ref 指定登录入口 -->
+    <security:http
+            pattern="/api/**"
+            realm="Protected API"
+            auto-config="false"
+            entry-point-ref="unauthorizedEntryPoint"
+            authentication-manager-ref="authenticationManager">
+        <security:custom-filter ref="customerLoginFilter" position="FORM_LOGIN_FILTER" />
+        <security:custom-filter ref="rememberMeFilter" position="REMEMBER_ME_FILTER"/>
+        <security:custom-filter ref="logoutFilter" position="LOGOUT_FILTER"/>
+        <!--该 pattern 是在 http 元素对应 pattern 基础上的，也就是说一个请求必须先满足 http 对应的 pattern
+        才有可能满足其下 intercept-url 对应的 pattern。-->
+        <security:intercept-url pattern="/api/city" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <!--<security:intercept-url pattern="/api/**" access="ROLE_USER"/>-->
+        <!--表示访问任何资源都需要ROLE_ADMIN权限。-->
+        <!--<security:intercept-url pattern="/**" access="ROLE_ADMIN"/>-->
+        <security:csrf disabled="true"/>
+    </security:http>
+
+    <bean id="passwordEncoder" class="net.caidingke.profile.security.CustomPasswordEncoder">
+    </bean>
+
+    <!-- 配置密码加密类 -->
+    <!--<bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>-->
+
+    <bean id="customerLoginFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+        <property name="usernameParameter" value="username"/>
+        <property name="passwordParameter" value="password"/>
+        <property name="filterProcessesUrl" value="/api/login"/>
+
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="authenticationFailureHandler" ref="restAuthenticationFailureHandler"/>
+        <property name="authenticationSuccessHandler" ref="restAuthenticationSuccessHandler"/>
+
+        <property name="rememberMeServices" ref="rememberMeServices"/>
+    </bean>
+
+    <bean id="logoutFilter"
+          class="org.springframework.security.web.authentication.logout.LogoutFilter">
+        <constructor-arg ref="CdkLogoutSuccessHandler"/>
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+                <ref bean="rememberMeServices"/>
+            </list>
+        </constructor-arg>
+        <property name="filterProcessesUrl" value="/api/logout"/>
+    </bean>
+
+    <!--跟 AuthenticationProvider 关系密切，用来获取用户信息的。-->
+    <bean id="userDetailsService"
+          class="net.caidingke.profile.service.CustomerUserDetailsServiceImpl">
+        <property name="customerService" ref="customerService"/>
+    </bean>
+
+    <!--处理来自于框架其他部分的认证请求。-->
+    <security:authentication-manager id="authenticationManager">
+        <security:authentication-provider user-service-ref="userDetailsService">
+            <security:password-encoder ref="passwordEncoder"/>
+        </security:authentication-provider>
+        <security:authentication-provider ref="rememberMeAuthenticationProvider"/>
+    </security:authentication-manager>
+
+    <bean id="rememberMeFilter" class=
+            "org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
+        <constructor-arg index="0" ref="authenticationManager"/>
+        <constructor-arg index="1" ref="rememberMeServices"/>
+    </bean>
+
+    <bean id="rememberMeServices" class=
+            "org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
+        <constructor-arg index="0" value="springRocks"/>
+        <constructor-arg index="1" ref="userDetailsService"/>
+        <property name="alwaysRemember" value="true"/>
+        <property name="tokenValiditySeconds" value="15552000"/>
+        <!-- 指定 request 中包含的用户是否选择了记住我的参数名 -->
+        <property name="parameter" value="rememberMe"/>
+    </bean>
+
+
+    <!-- RememberMeServices token persistent 的实现 -->
+    <!--<bean id="rememberMeServicesPersisten"-->
+          <!--class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices">-->
+        <!--<constructor-arg index="0" value="springRocks"/>-->
+        <!--<constructor-arg index="1" ref="userDetailsService"/>-->
+        <!--&lt;!&ndash;内存和磁盘&ndash;&gt;-->
+        <!--<constructor-arg index="2" ref="tokenRepository"/>-->
+        <!--&lt;!&ndash; 指定 request 中包含的用户是否选择了记住我的参数名 &ndash;&gt;-->
+        <!--<property name="parameter" value="rememberMe"/>-->
+    <!--</bean>-->
+
+    <!-- 指定 PersistentTokenRepository -->
+    <bean id="tokenRepository" class="org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 是否在系统启动时创建持久化 token 的数据库表 -->
+        <property name="createTableOnStartup" value="false"/>
+    </bean>
+
+    <!--AuthenticationManager 是通过它来认证用户的-->
+    <!-- key 值需与对应的 RememberMeServices 保持一致 -->
+    <bean id="rememberMeAuthenticationProvider"
+          class="org.springframework.security.authentication.RememberMeAuthenticationProvider">
+        <constructor-arg value="springRocks"/>
+    </bean>
+
+    <bean id="restAuthenticationSuccessHandler"
+          class="net.caidingke.profile.security.JsonAuthenticationSuccessHandler"/>
+
+    <bean id="restAuthenticationFailureHandler"
+          class="net.caidingke.profile.security.JsonAuthenticationFailureHandler"/>
+
+    <bean id="CdkLogoutSuccessHandler"
+          class="net.caidingke.profile.security.CdkLogoutSuccessHandler"/>
+
+    <bean id="unauthorizedEntryPoint" class="net.caidingke.profile.security.UnauthorizedEntryPoint"/>
+
+
+</beans>
