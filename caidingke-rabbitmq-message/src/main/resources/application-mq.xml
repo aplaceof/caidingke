@@ -80,6 +80,10 @@ http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.spri
         <rabbit:listener queues="fanout-subscribe2" ref="fanoutListener"/>
     </rabbit:listener-container>
 
+    <rabbit:listener-container message-converter="jsonMessageConverter" connection-factory="connectionFactory" acknowledge="auto">
+        <rabbit:listener queues="fanout-subscribe" ref="fanoutListenerCustom" method="onMessageHandler"/>
+    </rabbit:listener-container>
+
     <!-- topic监听器绑定-->
     <!--<rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto">-->
         <!--<rabbit:listener queues="queue_topic" ref="topicListener"/>-->
