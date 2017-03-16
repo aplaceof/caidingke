@@ -16,11 +16,12 @@
         <module>caidingke-web-app</module>
         <module>caidingke-core</module>
         <module>caidingke-elasticsearch</module>
+        <module>caidingke-zookeeper</module>
     </modules>
 
     <properties>
         <spring.version>4.3.5.RELEASE</spring.version>
-        <curator.version>3.2.1</curator.version>
+        <curator.version>2.9.1</curator.version>
         <dependency.scope>compile</dependency.scope>
         <slf4j.version>1.7.7</slf4j.version>
         <logback.version>1.1.8</logback.version>

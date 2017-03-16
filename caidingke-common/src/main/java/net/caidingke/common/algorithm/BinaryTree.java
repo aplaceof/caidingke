@@ -76,11 +76,11 @@ public class BinaryTree {
     public void xianIterator(TreeNode<String> node)
     {
         this.printNode(node);
-        if(node.getLeftNode()!=null)
+        if( node.getLeftNode() != null)
         {
             this.xianIterator(node.getLeftNode());
         }
-        if(node.getRightNode()!=null)
+        if( node.getRightNode() != null)
         {
             this.xianIterator(node.getRightNode());
         }
@@ -90,12 +90,12 @@ public class BinaryTree {
      * 中序遍历二叉树*/
     public void zhongIterator(TreeNode<String> node)
     {
-        if(node.getLeftNode()!=null)
+        if( node.getLeftNode() != null)
         {
             this.zhongIterator(node.getLeftNode());
         }
         this.printNode(node);
-        if(node.getRightNode()!=null)
+        if( node.getRightNode() != null)
         {
             this.zhongIterator(node.getRightNode());
         }
@@ -104,11 +104,11 @@ public class BinaryTree {
     /**后序遍历二叉树*/
     public void houIterator(TreeNode<String> node)
     {
-        if(node.getLeftNode()!=null)
+        if( node.getLeftNode() != null)
         {
             this.houIterator(node.getLeftNode());
         }
-        if(node.getRightNode()!=null)
+        if( node.getRightNode() != null)
         {
             this.houIterator(node.getRightNode());
         }
